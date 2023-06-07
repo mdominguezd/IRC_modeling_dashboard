@@ -8,7 +8,7 @@ color = 'lightsteelblue'
 
 layout = html.Div([html.Div([html.Div([],style = {'width':'0.5%'}), html.H1('Indoor Radon Concentrations (IRC) modeling app', style={'font-family' : 'bahnschrift'})], 
                             style = {'display':'flex', 'width' : '100%', 'margin' : 'auto'}),
-                   html.Div([''], style = {'height':20, 'background-color':color, 'width' : '100%', 'margin' : 'auto'}),
+                   html.Div([''], style = {'height':20, 'background-color':color, 'width' : 1900, 'margin' : 'auto'}),
                        html.Div([html.H5('Upload here your datasets before you continue',
                                          style={'font-family' : 'bahnschrift'}),
                                  html.Div([html.Div([dcc.Upload(id='upload-data-f',
@@ -88,6 +88,7 @@ layout = html.Div([html.Div([html.Div([],style = {'width':'0.5%'}), html.H1('Ind
                                                               style=dict(display='flex')
                                                              ),
                                                      html.Div([], style = {'height': 10}),
+                                                     html.Div([html.H6('Advanced: ', style={'font-family' : 'bahnschrift'})]),
                                                      html.Div([html.Plaintext('   High quality model:',
                                                                               style={'font-family' : 'bahnschrift', 'width' : 170}
                                                                              ),
@@ -97,6 +98,15 @@ layout = html.Div([html.Div([html.Div([],style = {'width':'0.5%'}), html.H1('Ind
                                                                        ),
                                                               ],
                                                               style=dict(display='flex', width = 440)),
+                                                     html.Div([html.Plaintext('   Coordinate Reference System (EPSG):',
+                                                                              style={'font-family' : 'bahnschrift', 'width' : 380}),
+                                                               dcc.Input(id="EPSG",
+                                                                         value = '3116',
+                                                                         type="text", 
+                                                                         placeholder = "", 
+                                                                         debounce=True,
+                                                                         style={'width':60, 'font-family' : 'bahnschrift', 'height' : 25, 'margin':'auto'})
+                                                              ], style=dict(display='flex', width = 440)),
                                                      html.Div([html.Div([html.Plaintext('   Run model: ',
                                                                                         style={'font-family' : 'bahnschrift', 'width' : 100}
                                                                                        ),
@@ -123,12 +133,12 @@ layout = html.Div([html.Div([html.Div([],style = {'width':'0.5%'}), html.H1('Ind
                                            html.Div([''], style = {'width':20, 'minWidth' : 20, 'background-color':color}),
                                            html.Div([dcc.Loading(id = 'loadg', 
                                                                  children = [dcc.Graph(id='RC-histogram',
-                                                                                       style = {'height' : 470, 'width' : 995}
+                                                                                       style = {'height' : '100%', 'width' : 995}
                                                                                       ),]
                                                                 ),
                                                      html.Div([''], style = {'width':20, 'minWidth' : 20, 'background-color':color}),
                                                      dcc.Loading(id = 'ld',
-                                                                 children = [dcc.Graph(id = 'FS_out', style = {'height' : 470, 'width' : 400})]),
+                                                                 children = [dcc.Graph(id = 'FS_out', style = {'height' : '100%', 'width' : 400})]),
                                                     ],
                                                     style=dict(display='flex'))
                                           ],

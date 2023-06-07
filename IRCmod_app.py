@@ -120,10 +120,10 @@ lst_clicks_mp = []
 
 @app.callback(
     [Output('RC-model-map', 'figure'),Output('imp', 'data'),Output('RMSE', 'data')],
-    [Input('Predict_Rn','n_clicks'),Input('model', 'value'), Input('vars_','value'), Input('HQ_model','on'), Input('upload-data-f', 'contents'), Input('upload-data-r', 'contents')]
+    [Input('Predict_Rn','n_clicks'),Input('model', 'value'), Input('vars_','value'), Input('HQ_model','on'), Input('upload-data-f', 'contents'), Input('upload-data-r', 'contents'), Input('EPSG', 'value')]
 )
 
-def update_map(Predict_Rn, model, vars_, HQ, DF_RC_c, df_RnModel_c):
+def update_map(Predict_Rn, model, vars_, HQ, DF_RC_c, df_RnModel_c, crs):
         
     lst_clicks_mp.append(Predict_Rn)
     
@@ -164,14 +164,14 @@ def update_map(Predict_Rn, model, vars_, HQ, DF_RC_c, df_RnModel_c):
             print(msg)
             imp, RMSE, mod, msg = RP.fit_model(X,y,HQ, model = model)
             print(msg)
-            rc_pol, x_c, y_c, n, msg = RP.apply_model(mod, model, X, HQ, df_RnModel, res=100)
+            rc_pol, x_c, y_c, n, msg = RP.apply_model(mod, model, X, HQ, df_RnModel, crs, res=100)
             print(msg)
         else:
             X, y, msg = RP.read_data(vars_, DF_RC)
             print(msg)
             imp, RMSE, mod, msg = RP.fit_model(X, y, HQ, model = model)
             print(msg)
-            rc_pol, x_c, y_c, n, msg = RP.apply_model(mod, model, X, HQ, df_RnModel)
+            rc_pol, x_c, y_c, n, msg = RP.apply_model(mod, model, X, HQ, df_RnModel, crs)
             print(msg)
             
         fig = ff.create_hexbin_mapbox(data_frame=rc_pol,
