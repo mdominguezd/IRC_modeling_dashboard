@@ -24,11 +24,9 @@ The IRCmod dashboard requires to tables as input.
 
 1. A table that will be used for the fitting of the log-linear model.
     * This table should include a column with the radon measurements named **RC** and several columns with the explanatory variables selected to model RC as shown below.
-
 | RC | var_1 | var_2 | ... | var_n |
 | -- | -- | -- | -- | -- |
 |val_RC1 | val_var_1 | val_var_2 | ... | val_var_n |
-
     * An example of this table can be accessed [**here**](https://github.com/mdominguezd/RnSurvey_Bogota_DataAnalysis/blob/main/Dataset%20for%20fitting/Processed_DataFrame.csv)
 
 
