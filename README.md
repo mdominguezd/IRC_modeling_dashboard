@@ -1,6 +1,7 @@
 # Indoor Radon Concentrations Modeling Dashboard (IRCMod)
 
 **Created by:** [**Martín Domínguez Durán**](https://www.martindominguezduran.com/)
+
 This repository includes the necessary code to run the Indoor Radon Concentrations Modeling dashboard (**IRCmod**) locally in your own machine. This dashboard was elaborated to model the radon concentrations in the city of Bogotá, Colombia using a log-linear regression model. By making the repository public, we encourage researchers to use it for other cities in which radon measurements is scarce. A web version of the app can be accessed [**here**](http:/ircmodelingdashboard.eu.pythonanywhere.com), however, due to the remote server limitations it cannot handle large datasets.
 
 ## Installation
