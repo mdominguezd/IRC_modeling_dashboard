@@ -198,5 +198,5 @@ def update_map(Predict_Rn, model, vars_, HQ, DF_RC_c, df_RnModel_c, crs):
     return fig, imp, RMSE
 
 if __name__ == '__main__':
-    app.run_server(debug=True, use_reloader = False, port = 8052)
+    app.run_server(debug=True)
     

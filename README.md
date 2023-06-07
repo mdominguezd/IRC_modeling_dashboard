@@ -14,7 +14,10 @@ Once downloaded, open the *Anaconda prompt* and type the following commands (You
     conda activate YOUR_ENVIRONMENT
     conda install pip
     pip install -r requirements.txt
+    
+    python IRCmod_app.py
    
+After running the final line you should get a message with the location of the local serve in which the app is running. This should be: `http://127.0.0.1:8050/`.
 
 ## How to use
 
