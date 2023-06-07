@@ -31,7 +31,7 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.MORPH, dbc.icons.BOOTSTRAP
 server = app.server
 load_figure_template(["morph"])
 
-app.name = 'IRC_modeling_app'
+app.title = 'IRC modeling app'
 
 app.layout = Layout.layout
 
@@ -194,4 +194,4 @@ def update_map(Predict_Rn, model, vars_, HQ, DF_RC_c, df_RnModel_c):
     return fig, imp, RMSE
 
 if __name__ == '__main__':
-    app.run_server(debug=True, use_reloader = False, port = 8080)
+    app.run_server(debug=True)
