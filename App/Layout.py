@@ -6,7 +6,7 @@ from dash import dash_table
 
 color = 'lightsteelblue'
 
-layout = html.Div([html.Div([html.Div([],style = {'width':'0.5%'}), html.H1('Residential RC modeling', style={'font-family' : 'bahnschrift'})], 
+layout = html.Div([html.Div([html.Div([],style = {'width':'0.5%'}), html.H1('Indoor Radon Concentrations (IRC) modeling app', style={'font-family' : 'bahnschrift'})], 
                             style = {'display':'flex', 'width' : '100%', 'margin' : 'auto'}),
                    html.Div([''], style = {'height':20, 'background-color':color, 'width' : '100%', 'margin' : 'auto'}),
                        html.Div([html.H5('Upload here your datasets before you continue',
@@ -44,7 +44,7 @@ layout = html.Div([html.Div([html.Div([],style = {'width':'0.5%'}), html.H1('Res
                                           ],
                                           style = {'width' : '100%', 'display' : 'flex','margin' : 'auto', 'textAlign' :'center'}
                                          ),
-                                 html.Div([''], style = {'height':20, 'background-color':color, 'width' : '100%', 'margin' : 'auto'}),
+                                 html.Div([''], style = {'height':20, 'background-color':color, 'width' : 1900}),
                                  html.Div([html.Div([''], style = {'width':10, 'minWidth' : 10}),
                                            html.Div([html.H5('Compare measurements with recommendation levels', 
                                                              style={'font-family' : 'bahnschrift', 'width' : 440}),
@@ -133,7 +133,7 @@ layout = html.Div([html.Div([html.Div([],style = {'width':'0.5%'}), html.H1('Res
                                                     style=dict(display='flex'))
                                           ],
                                           style=dict(display='flex')),
-                                 html.Div([''],style = {'height':20, 'background-color':color}),
+                                 html.Div([''],style = {'height':20, 'background-color':color, 'width' : 1900}),
                                  html.Div([html.Div([''], style = {'width':10, 'minWidth' : 10}),
                                            dcc.Loading(id='loadRes',
                                                       children = [html.Div([html.H5(' Regression results: ',
@@ -163,7 +163,7 @@ layout = html.Div([html.Div([html.Div([],style = {'width':'0.5%'}), html.H1('Res
                                           ],
                                           style=dict(display='flex')
                                          ),
-                                 html.Div([''], style = {'height':20,'background-color':color}),
+                                 html.Div([''], style = {'height':20,'background-color':color, 'width' : 1900}),
                                  html.Div([''], style = {'height':20}),
                                  html.Div([html.Div([html.P('Dashboard created by:'),
                                                      html.A('Martín Domínguez Durán',

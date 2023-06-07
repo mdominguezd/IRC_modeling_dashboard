@@ -6,6 +6,7 @@ import dash
 from dash import Dash, dcc, html, callback, callback_context
 import dash_bootstrap_components as dbc
 from dash_bootstrap_templates import load_figure_template
+import plotly.figure_factory as ff
 import dash_daq as daq
 from dash.exceptions import PreventUpdate
 from dash import dash_table
@@ -163,24 +164,27 @@ def update_map(Predict_Rn, model, vars_, HQ, DF_RC_c, df_RnModel_c):
             print(msg)
             imp, RMSE, mod, msg = RP.fit_model(X,y,HQ, model = model)
             print(msg)
-            rc_pol, x_c, y_c, msg = RP.apply_model(mod, model, X, HQ, df_RnModel, res=100)
+            rc_pol, x_c, y_c, n, msg = RP.apply_model(mod, model, X, HQ, df_RnModel, res=100)
             print(msg)
         else:
             X, y, msg = RP.read_data(vars_, DF_RC)
             print(msg)
             imp, RMSE, mod, msg = RP.fit_model(X, y, HQ, model = model)
             print(msg)
-            rc_pol, x_c, y_c, msg = RP.apply_model(mod, model, X, HQ, df_RnModel)
+            rc_pol, x_c, y_c, n, msg = RP.apply_model(mod, model, X, HQ, df_RnModel)
             print(msg)
-
-        fig = px.choropleth_mapbox(rc_pol,
-                                    geojson=rc_pol.geometry,
-                                    locations = rc_pol.index,
-                                    color='RC',
-                                    color_continuous_scale="Portland",
-                                    opacity = 0.65,
-                                    hover_data= ['RC']
-                                   )
+            
+        fig = ff.create_hexbin_mapbox(data_frame=rc_pol,
+                                      lat="Y", 
+                                      lon="X",
+                                      nx_hexagon=n,
+                                      opacity=0.65,
+                                      min_count = 1,
+                                      labels={"color": "RC"},
+                                      color="RC",
+                                      agg_func=np.mean,
+                                      color_continuous_midpoint=100,
+                                      color_continuous_scale="Portland")
         
         fig.update_traces(marker_line_width = 0, hoverinfo = 'z')
 
@@ -194,4 +198,5 @@ def update_map(Predict_Rn, model, vars_, HQ, DF_RC_c, df_RnModel_c):
     return fig, imp, RMSE
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, use_reloader = False, port = 8052)
+    

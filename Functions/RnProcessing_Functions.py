@@ -151,29 +151,7 @@ def apply_model(mod,
     
     df_RnModel['const'] = np.ones(len(df_RnModel))
 
-    x_range = df_RnModel['X'].max() - df_RnModel['X'].min()
-    y_range = df_RnModel['Y'].max() - df_RnModel['Y'].min()
-
-    df_RnModel['Cluster'] = np.zeros(len(df_RnModel))
-
-    cols = np.arange(df_RnModel['X'].min() + res/2, df_RnModel['X'].max(), res)
-    rows = np.arange(df_RnModel['Y'].min() + res/2, df_RnModel['Y'].max(), res)
-
-    k = 0
-    polygons = []
-    
-    for i in range(len(cols)-1):
-
-        for j in range(len(rows)-1):
-
-            k += 1
-            df_RnModel.loc[(df_RnModel.X >= cols[i])&(df_RnModel.X < cols[i+1])&(df_RnModel['Y'] >= rows[j])&(df_RnModel['Y'] < rows[j+1]), 'Cluster'] = k
-            polygons.append(Polygon([(cols[i],rows[j]),
-                                     (cols[i]+res, rows[j]), 
-                                     (cols[i]+res, rows[j]+res), 
-                                     (cols[i], rows[j]+res)]))    
-
-    df_RnModel = df_RnModel.groupby('Cluster').mean()
+    cols = int((df_RnModel['X'].max() - df_RnModel['X'].min())/res)
 
     df_RnModel_reg = df_RnModel[list(X.columns)]
 
@@ -185,14 +163,12 @@ def apply_model(mod,
     gdf = gpd.GeoDataFrame(df_RnModel['RC'], geometry=gpd.points_from_xy(df_RnModel.X, df_RnModel.Y))
     gdf = gdf.set_crs('EPSG:'+crs)
     gdf = gdf.to_crs('EPSG:4326')
-    grid = gpd.GeoDataFrame({'geometry':polygons})
-    grid = grid.set_crs('EPSG:'+crs)
-    grid = grid.to_crs('EPSG:4326')
-    grid = gpd.sjoin(grid, gdf)
+    gdf['X'] = gdf.geometry.x
+    gdf['Y'] = gdf.geometry.y
     
     msg = 'Done :)'
     
-    x_c = grid.dissolve().centroid.x.mean()
-    y_c = grid.dissolve().centroid.y.mean()
+    x_c = gdf.dissolve().centroid.x.mean()
+    y_c = gdf.dissolve().centroid.y.mean()
 
-    return grid, x_c, y_c, msg
+    return gdf, x_c, y_c, cols, msg
