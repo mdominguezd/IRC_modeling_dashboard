@@ -35,9 +35,9 @@ The IRCmod dashboard requires to tables as input.
 2. A table with the **cadaster information** that will be used for applying the model to the rest of the houses in the specific place.
     * This table should include the same columns with the information of the explanatory variables and two extra columns with **X** and **Y** coordinates in a known **Projected** (Info. on projections [**here**](https://www.esri.com/arcgis-blog/products/arcgis-pro/mapping/gcs_vs_pcs/#:~:text=What%20is%20the%20difference%20between,map%20or%20a%20computer%20screen.)) Coordinate Reference System (CRS). The table should follow th structure shown below.
 
-| RC | var_1 | var_2 | ... | var_n | X | Y |
-| -- | -- | -- | -- | -- | -- | -- |
-|val_RC1 | val_var_1 | val_var_2 | ... | val_var_n | val_X | val_Y |
+|  var_1 | var_2 | ... | var_n | X | Y |
+| -- | -- | -- | -- | -- | -- |
+| val_var_1 | val_var_2 | ... | val_var_n | val_X | val_Y |
 
     * An example of this table can be accessed [**here**](https://github.com/mdominguezd/RnSurvey_Bogota_DataAnalysis/blob/main/Dataset%20for%20regression/Houses_for_Rn_estimation_processed_3116.txt)
     
