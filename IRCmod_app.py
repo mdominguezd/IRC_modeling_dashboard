@@ -57,7 +57,7 @@ def update_uploaded_data(list_of_contents):
     [Output('RC-histogram', 'figure'), Output('vars_', 'options')],
     [Input('Organization', 'value'), Input('upload-data-f','contents')])
 def update_RC_distribution(Organization, list_of_contents):
-    
+        
     if list_of_contents is not None:
         
         # Read data
@@ -73,14 +73,15 @@ def update_RC_distribution(Organization, list_of_contents):
         var_names = list(df.columns)
         
     else:
-        fig = make_subplots(cols = 1)
-
-        fig.update_layout(template = 'morph',
-                          yaxis=dict(showgrid = False, tickvals = [], zeroline = False),
-                          xaxis=dict(showgrid = False, tickvals = [], zeroline = False)
-                         )
         
-        var_names = []
+        df = pd.read_csv('https://raw.githubusercontent.com/mdominguezd/RnSurvey_Bogota_DataAnalysis/main/Dataset%20for%20fitting/Processed_DataFrame.csv')
+        
+        # Create figure of radon measurements distribution
+        fig = VIS.plot_RC_dist(Organization, df)
+
+        df = df.T[df.apply(lambda df: ('ID' not in df.name) and ('RC' not in df.name) and ('Radon' not in df.name))].T   
+        
+        var_names = list(df.columns)
     
     return fig, var_names
 
@@ -106,12 +107,15 @@ def feature_sel(info_FS, list_of_contents):
                           font_family = 'bahnschrift')
     else:
         
-        fig = make_subplots(cols = 1)
+        DF_RC = pd.read_csv('https://raw.githubusercontent.com/mdominguezd/RnSurvey_Bogota_DataAnalysis/main/Dataset%20for%20fitting/Processed_DataFrame.csv')
+        
+        # Create figure that can be used for feature selection
+        fig = VIS.plot_feature_sel(DF_RC, info_FS)
 
-        fig.update_layout(template = 'morph',
-                          yaxis=dict(showgrid = False, tickvals = [], zeroline = False),
-                          xaxis=dict(showgrid = False, tickvals = [], zeroline = False)
-                         )
+
+        fig.update_layout(title_text = 'Information for feature selection', 
+                          title_font_family = 'bahnschrift',
+                          font_family = 'bahnschrift')
             
     return fig
     
@@ -124,73 +128,133 @@ lst_clicks_mp = []
 )
 
 def update_map(Predict_Rn, model, vars_, HQ, DF_RC_c, df_RnModel_c, crs):
-        
-    lst_clicks_mp.append(Predict_Rn)
     
-    if (Predict_Rn == 0):
-        df = pd.DataFrame([[0,-72]])
-        df_ = pd.DataFrame(['  '])
-        df_.columns = [' ']
-        imp = df_.to_dict('records')
-        RMSE = imp
-        fig = px.scatter_mapbox(df, lat = 0, lon = 1, opacity = 0)
-        
-        fig.update_traces(hoverinfo = 'skip', hovertemplate = " ")
-        fig.update_layout(mapbox_style="carto-positron",
-                          mapbox_zoom = 1.5)
-        
-    elif (lst_clicks_mp[-1] == lst_clicks_mp[-2]):
-        raise PreventUpdate
-        
-    elif (lst_clicks_mp[-1] > lst_clicks_mp[-2]):
-        if DF_RC_c is not None:
-        
-            cont = DF_RC_c.split(',')[1]
+    if df_RnModel_c is not None:
+    
+        lst_clicks_mp.append(Predict_Rn)
 
-            decoded = base64.b64decode(cont)
+        if (Predict_Rn == 0):
+            df = pd.DataFrame([[0,-72]])
+            df_ = pd.DataFrame(['  '])
+            df_.columns = [' ']
+            imp = df_.to_dict('records')
+            RMSE = imp
+            fig = px.scatter_mapbox(df, lat = 0, lon = 1, opacity = 0)
 
-            DF_RC = pd.read_csv(io.StringIO(decoded.decode('utf-8')))
+            fig.update_traces(hoverinfo = 'skip', hovertemplate = " ")
+            fig.update_layout(mapbox_style="carto-positron",
+                              mapbox_zoom = 1.5)
 
-        if df_RnModel_c is not None:
+        elif (lst_clicks_mp[-1] == lst_clicks_mp[-2]):
+            raise PreventUpdate
 
-            cont = df_RnModel_c.split(',')[1]
+        elif (lst_clicks_mp[-1] > lst_clicks_mp[-2]):
+            if DF_RC_c is not None:
 
-            decoded = base64.b64decode(cont)
+                cont = DF_RC_c.split(',')[1]
 
-            df_RnModel = pd.read_csv(io.StringIO(decoded.decode('utf-8')))
-        
-        if  HQ:    
-            X, y, msg = RP.read_data(vars_, DF_RC)
-            print(msg)
-            imp, RMSE, mod, msg = RP.fit_model(X,y,HQ, model = model)
-            print(msg)
-            rc_pol, x_c, y_c, n, msg = RP.apply_model(mod, model, X, HQ, df_RnModel, crs, res=100)
-            print(msg)
-        else:
-            X, y, msg = RP.read_data(vars_, DF_RC)
-            print(msg)
-            imp, RMSE, mod, msg = RP.fit_model(X, y, HQ, model = model)
-            print(msg)
-            rc_pol, x_c, y_c, n, msg = RP.apply_model(mod, model, X, HQ, df_RnModel, crs)
-            print(msg)
+                decoded = base64.b64decode(cont)
+
+                DF_RC = pd.read_csv(io.StringIO(decoded.decode('utf-8')))
+
+            if df_RnModel_c is not None:
+
+                cont = df_RnModel_c.split(',')[1]
+
+                decoded = base64.b64decode(cont)
+
+                df_RnModel = pd.read_csv(io.StringIO(decoded.decode('utf-8')))
+
+            if  HQ:    
+                X, y, msg = RP.read_data(vars_, DF_RC)
+                print(msg)
+                imp, RMSE, mod, msg = RP.fit_model(X,y,HQ, model = model)
+                print(msg)
+                rc_pol, x_c, y_c, n, msg = RP.apply_model(mod, model, X, HQ, df_RnModel, crs, res=100)
+                print(msg)
+            else:
+                X, y, msg = RP.read_data(vars_, DF_RC)
+                print(msg)
+                imp, RMSE, mod, msg = RP.fit_model(X, y, HQ, model = model)
+                print(msg)
+                rc_pol, x_c, y_c, n, msg = RP.apply_model(mod, model, X, HQ, df_RnModel, crs)
+                print(msg)
+
+            fig = ff.create_hexbin_mapbox(data_frame=rc_pol,
+                                          lat="Y", 
+                                          lon="X",
+                                          nx_hexagon=n,
+                                          opacity=0.65,
+                                          min_count = 1,
+                                          labels={"color": "RC"},
+                                          color="RC",
+                                          agg_func=np.mean,
+                                          color_continuous_midpoint=100,
+                                          color_continuous_scale="Portland")
+
+            fig.update_traces(marker_line_width = 0, hoverinfo = 'z')
+
+            fig.update_layout(mapbox_style="carto-positron",
+                              mapbox_center = {'lat':y_c, 'lon':x_c},
+                              mapbox_zoom = 10)
             
-        fig = ff.create_hexbin_mapbox(data_frame=rc_pol,
-                                      lat="Y", 
-                                      lon="X",
-                                      nx_hexagon=n,
-                                      opacity=0.65,
-                                      min_count = 1,
-                                      labels={"color": "RC"},
-                                      color="RC",
-                                      agg_func=np.mean,
-                                      color_continuous_midpoint=100,
-                                      color_continuous_scale="Portland")
+    else:
         
-        fig.update_traces(marker_line_width = 0, hoverinfo = 'z')
+        lst_clicks_mp.append(Predict_Rn)
 
-        fig.update_layout(mapbox_style="carto-positron",
-                          mapbox_center = {'lat':y_c, 'lon':x_c},
-                          mapbox_zoom = 10)
+        if (Predict_Rn == 0):
+            df = pd.DataFrame([[0,-72]])
+            df_ = pd.DataFrame(['  '])
+            df_.columns = [' ']
+            imp = df_.to_dict('records')
+            RMSE = imp
+            fig = px.scatter_mapbox(df, lat = 0, lon = 1, opacity = 0)
+
+            fig.update_traces(hoverinfo = 'skip', hovertemplate = " ")
+            fig.update_layout(mapbox_style="carto-positron",
+                              mapbox_zoom = 1.5)
+
+        elif (lst_clicks_mp[-1] == lst_clicks_mp[-2]):
+            raise PreventUpdate
+
+        elif (lst_clicks_mp[-1] > lst_clicks_mp[-2]):
+
+            DF_RC = pd.read_csv('https://raw.githubusercontent.com/mdominguezd/RnSurvey_Bogota_DataAnalysis/main/Dataset%20for%20fitting/Processed_DataFrame.csv')
+
+            df_RnModel = pd.read_csv('https://raw.githubusercontent.com/mdominguezd/RnSurvey_Bogota_DataAnalysis/main/Dataset%20for%20regression/Aggregated_Dataset_Bog.csv')
+
+            if  HQ:    
+                X, y, msg = RP.read_data(vars_, DF_RC)
+                print(msg)
+                imp, RMSE, mod, msg = RP.fit_model(X,y,HQ, model = model)
+                print(msg)
+                rc_pol, x_c, y_c, n, msg = RP.apply_model(mod, model, X, HQ, df_RnModel, crs, res=100)
+                print(msg)
+            else:
+                X, y, msg = RP.read_data(vars_, DF_RC)
+                print(msg)
+                imp, RMSE, mod, msg = RP.fit_model(X, y, HQ, model = model)
+                print(msg)
+                rc_pol, x_c, y_c, n, msg = RP.apply_model(mod, model, X, HQ, df_RnModel, crs)
+                print(msg)
+
+            fig = ff.create_hexbin_mapbox(data_frame=rc_pol,
+                                          lat="Y", 
+                                          lon="X",
+                                          nx_hexagon=n,
+                                          opacity=0.65,
+                                          min_count = 1,
+                                          labels={"color": "RC"},
+                                          color="RC",
+                                          agg_func=np.mean,
+                                          color_continuous_midpoint=100,
+                                          color_continuous_scale="Portland")
+
+            fig.update_traces(marker_line_width = 0, hoverinfo = 'z')
+
+            fig.update_layout(mapbox_style="carto-positron",
+                              mapbox_center = {'lat':y_c, 'lon':x_c},
+                              mapbox_zoom = 10)
     
     
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
@@ -198,5 +262,5 @@ def update_map(Predict_Rn, model, vars_, HQ, DF_RC_c, df_RnModel_c, crs):
     return fig, imp, RMSE
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, use_reloader = False)
     
